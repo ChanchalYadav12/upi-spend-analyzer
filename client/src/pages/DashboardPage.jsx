@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -9,12 +10,14 @@ import { buildSummary } from "../utils/summary";
 const COLORS = ["#7c6af7","#34d399","#fbbf24","#f87171","#60a5fa","#f472b6","#a78bfa","#4ade80","#fb923c","#38bdf8"];
 
 export default function DashboardPage({ transactions, onReset }) {
+  console.log("Dashboard received:", transactions);
   const [tips, setTips] = useState([]);
   const [tipsLoading, setTipsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
   const [filter, setFilter] = useState("all");
 
   const summary = buildSummary(transactions);
+  console.log(transactions);
 
   const categoryData = Object.entries(summary.byCategory)
     .sort((a, b) => b[1] - a[1])

@@ -36,6 +36,15 @@ export default function UploadPage({ onUploadSuccess }) {
       const res = await axios.post("/api/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      console.log("Upload API Response:", res.data);
+      console.log("Transactions:", res.data.transactions);
+
+      console.log("FULL RESPONSE:", res.data);
+      alert(JSON.stringify(res.data).substring(0, 300));
+
+      console.log("Upload Response:", res.data);
+      console.log("Transactions:", res.data.transactions);
+
       onUploadSuccess(res.data.transactions);
     } catch (err) {
       setError(

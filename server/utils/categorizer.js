@@ -5,7 +5,7 @@
 
 const CATEGORY_KEYWORDS = {
   "🍔 Food & Dining": [
-    "swiggy", "zomato", "dominos", "domino", "mcdonald", "mcdonalds",
+    "swiggy", "zomato", "dominos", "bistro", "eatclub", "faasos", "behrouz", "behrouz", "domino", "mcdonald", "mcdonalds",
     "kfc", "pizza", "burger", "restaurant", "cafe", "dhaba", "hotel",
     "food", "biryani", "barbeque", "bbq", "eating", "dine", "canteen",
     "mess", "thali", "udupi", "subway", "dunkin", "starbucks", "chai",
@@ -37,10 +37,18 @@ const CATEGORY_KEYWORDS = {
     "shell", "reliance petrol", "fuel station", "cng", "lpg"
   ],
   "🏥 Health & Medical": [
-    "pharmeasy", "1mg", "netmeds", "apollo pharmacy", "medplus",
-    "hospital", "clinic", "doctor", "medical", "pharmacy", "chemist",
-    "medicine", "health", "wellness", "gym", "cult fit", "cultfit",
-    "insurance", "lic", "max bupa", "star health"
+    "apple medi",
+    "apollo",
+    "pharmeasy",
+    "1mg",
+    "netmeds",
+    "medplus",
+    "medical",
+    "medicine",
+    "hospital",
+    "clinic",
+    "doctor"
+
   ],
   "🎓 Education": [
     "udemy", "coursera", "unacademy", "byjus", "byju", "vedantu",
@@ -55,10 +63,75 @@ const CATEGORY_KEYWORDS = {
     "municipal", "maintenance", "society", "rent", "paytm postpaid"
   ],
   "🏦 Finance & Transfers": [
-    "emi", "loan", "credit card", "cc payment", "insurance premium",
-    "mutual fund", "sip", "zerodha", "groww", "upstox", "nps",
-    "ppf", "fd", "fixed deposit", "transfer to", "sent to", "neft", "rtgs"
+    "emi",
+    "loan",
+    "credit card",
+    "cc payment",
+    "insurance premium",
+
+    "mutual fund",
+    "sip",
+    "zerodha",
+    "groww",
+    "upstox",
+
+    "safe gold",
+    "indmoney",
+    "indstocks",
+    "indian clearing corporation",
+
+    "ppf",
+    "fd",
+    "fixed deposit",
+
+    "neft",
+    "rtgs",
+
+    "transfer to",
+    "sent to",
+
+    "payment fr",
+
+    "upi/"
   ],
+
+  "💼 Salary & Income": [
+
+  "salary",
+
+  "quin que",
+
+  "foreign inward",
+
+  "stipend",
+
+  "payroll",
+
+  "salary credit",
+
+  "salary payment"
+
+],
+
+"🥬 Groceries": [
+
+    "blinkit",
+
+    "zepto",
+
+    "instamart",
+
+    "bigbasket",
+
+    "big basket",
+
+    "jiomart",
+
+    "dmart"
+
+  ],
+
+
   "🎮 Entertainment": [
     "bookmyshow", "pvr", "inox", "cinepolis", "movie", "cinema",
     "gaming", "steam", "playstation", "xbox", "paytm games",
@@ -66,21 +139,29 @@ const CATEGORY_KEYWORDS = {
   ],
 };
 
-const DEFAULT_CATEGORY = "📦 Others";
+const DEFAULT_CATEGORY = "❓ Uncategorized";
 
 function categorizeTransactions(transactions) {
   return transactions.map((txn) => {
-    const desc = (txn.description || "").toLowerCase();
+    const text = (
+    txn.merchant ||
+    txn.description ||
+    ""
+).toLowerCase();
+
     let matched = DEFAULT_CATEGORY;
 
     for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
-      if (keywords.some((kw) => desc.includes(kw.toLowerCase()))) {
+      if (keywords.some((kw) => text.includes(kw.toLowerCase()))) {
         matched = category;
         break;
       }
     }
+  if (matched === DEFAULT_CATEGORY) {
+    console.log("UNCATEGORIZED:", text);
+  }
 
-    return { ...txn, category: matched };
+    return {...txn, category: matched };
   });
 }
 
@@ -88,10 +169,10 @@ function categorizeTransactions(transactions) {
  * Build a summary object from categorized transactions
  */
 function buildSummary(transactions) {
-  const debits = transactions.filter((t) => t.type === "debit");
+  const spending = transactions.filter(t => t.type === "debit");
 
   const byCategory = {};
-  for (const txn of debits) {
+  for (const txn of spending) {
     if (!byCategory[txn.category]) byCategory[txn.category] = 0;
     byCategory[txn.category] += txn.amount;
   }
@@ -105,7 +186,7 @@ function buildSummary(transactions) {
 
   // Monthly breakdown
   const byMonth = {};
-  for (const txn of debits) {
+  for (const txn of spending) {
     const month = txn.date ? txn.date.substring(0, 7) : "Unknown";
     if (!byMonth[month]) byMonth[month] = 0;
     byMonth[month] += txn.amount;
@@ -115,7 +196,7 @@ function buildSummary(transactions) {
     total: Math.round(total),
     byCategory,
     byMonth,
-    transactionCount: debits.length,
+    transactionCount: spending.length,
   };
 }
 

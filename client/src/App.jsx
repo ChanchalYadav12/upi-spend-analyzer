@@ -4,16 +4,21 @@ import DashboardPage from "./pages/DashboardPage";
 import "./index.css";
 
 export default function App() {
-  const [transactions, setTransactions] = useState(null);
+  const [transactions, setTransactions] = useState([]);
 
   return (
     <div className="app">
-      {!transactions ? (
-        <UploadPage onUploadSuccess={setTransactions} />
+      {transactions.length === 0 ? (
+        <UploadPage
+          onUploadSuccess={(txns) => {
+            console.log("App received:", txns);
+            setTransactions(txns);
+          }}
+        />
       ) : (
         <DashboardPage
           transactions={transactions}
-          onReset={() => setTransactions(null)}
+          onReset={() => setTransactions([])}
         />
       )}
     </div>
